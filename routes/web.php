@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\ContestController;
 use App\Http\Controllers\ContestsParticipantController;
 use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
@@ -7,14 +8,17 @@ use Inertia\Inertia;
 
 Route::get('/', ContestsParticipantController::class)->name('home');
 
-Route::get('/dashboard', function () {
-    return Inertia::render('Dashboard');
-})->middleware(['auth', 'verified'])->name('dashboard');
+Route::prefix('contest')->name('contest.')->middleware('auth')->group(function () {
+    /*Route::get('/', [ContestController::class, '__invoke'])->name('index');*/
+    Route::post('/', [ContestController::class, 'store'])->name('store');
+});
 
-Route::middleware('auth')->group(function () {
-    Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
-    Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
-    Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
+Route::get('/dashboard', ContestController::class)->middleware(['auth', 'verified'])->name('dashboard');
+
+Route::prefix('profile')->name('profile.')->controller(ProfileController::class)->middleware('auth')->group(function () {
+    Route::get('/', 'edit')->name('edit');
+    Route::patch('/', 'update')->name('update');
+    Route::delete('/', 'destroy')->name('destroy');
 });
 
 require __DIR__ . '/auth.php';
