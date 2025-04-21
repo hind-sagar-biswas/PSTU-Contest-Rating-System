@@ -1,7 +1,7 @@
 @import 'tailwindcss';
 
 @plugin "daisyui" {
-    themes: dark --default, dark --prefersdark;
+    themes: light --default, light --prefersdark;
 }
 
 @plugin '@tailwindcss/forms';
