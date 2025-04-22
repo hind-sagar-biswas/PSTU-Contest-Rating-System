@@ -1,5 +1,6 @@
 <script setup>
 import Layout from '@/Layouts/AuthenticatedLayout.vue';
+import Rating from '@/Components/Rating.vue';
 import { Head } from '@inertiajs/vue3';
 
 defineProps({
@@ -31,6 +32,7 @@ defineProps({
                                 <tr>
                                     <th>#</th>
                                     <th>Name</th>
+                                    <th>Contests</th>
                                     <th class="text-right">Rating</th>
                                 </tr>
                             </thead>
@@ -40,8 +42,14 @@ defineProps({
                                 <template v-if="data.data.length">
                                     <tr v-for="(participant, index) in data.data" :key="index">
                                         <th>{{ index + 1 }}</th>
-                                        <td class="text-primary">{{ participant.name }}</td>
-                                        <td class="text-right">{{ participant.rating }}</td>
+                                        <td>
+                                            <!--Rating :rating="participant.rating" :value="participant.name" /-->
+                                            {{ participant.name }}
+                                        </td>
+                                        <td class="text-right">{{ participant.contests_count }}</td>
+                                        <td class="text-right">
+                                            <Rating :rating="participant.display_rating" />
+                                        </td>
                                     </tr>
                                 </template>
                                 <tr v-else>

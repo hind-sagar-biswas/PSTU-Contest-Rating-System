@@ -11,7 +11,7 @@ class ContestsParticipantController extends Controller
 {
     public function __invoke()
     {
-        $data = ContestsParticipant::orderBy('rating', 'desc')->latest()->get();
+        $data = ContestsParticipant::orderBy('display_rating', 'desc')->latest()->get();
         return Inertia::render('Contest/Participants', [
             'data' => ParticipantResource::collection($data),
         ]);

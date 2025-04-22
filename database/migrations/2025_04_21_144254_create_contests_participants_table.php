@@ -14,7 +14,9 @@ return new class extends Migration
         Schema::create('contests_participants', function (Blueprint $table) {
             $table->id();
             $table->string('name')->unique();
+            $table->integer('contests_count')->default(0);
             $table->integer('rating')->nullable()->default(null);
+            $table->integer('display_rating')->nullable()->default(0);
             $table->timestamps();
         });
     }

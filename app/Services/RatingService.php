@@ -4,18 +4,18 @@ namespace App\Services;
 
 use App\Models\Contest;
 use App\Models\ContestResult;
-use App\Models\ContestsParticipant;
 use Illuminate\Support\Facades\DB;
 
 class RatingService
 {
-    private const INITIAL_RATING = 100;
+    private const INTERNAL_RATING = 1400;
+    private const BUMP_SEQUENCE = [500, 350, 250, 150, 100, 50];
 
     // Elo win‐probability
     protected function winProbability(?int $rA, ?int $rB): float
     {
-        $rA = $rA ?? self::INITIAL_RATING;
-        $rB = $rB ?? self::INITIAL_RATING;
+        $rA = $rA ?? self::INTERNAL_RATING;
+        $rB = $rB ?? self::INTERNAL_RATING;
 
         return 1 / (1 + pow(10, ($rB - $rA) / 400));
     }
@@ -30,8 +30,8 @@ class RatingService
             $rA = $pA->rating;
             $seed = 1;
 
-
             if ($rA === null) {
+                // should not happen: rating always set on creation
                 $seed = 1 + $n / 2;
             } else {
                 foreach ($participants as $j => $pB) {
@@ -39,13 +39,14 @@ class RatingService
                     $seed += 1 - $this->winProbability($rA, $pB->rating);
                 }
             }
+
             $seeds[$pA->id] = $seed;
         }
 
         return $seeds;
     }
 
-    // Find rating R such that expected seed equals target (via binary search)
+    // Find performance rating via binary search
     protected function findPerformanceRating(int $id, float $targetSeed, array $participants): float
     {
         $low = 0;
@@ -56,7 +57,6 @@ class RatingService
             $seed = 1;
 
             foreach ($participants as $p) {
-                // skip ourselves and any unrated opponent
                 if ($p->id === $id) continue;
                 $seed += 1 - $this->winProbability($mid, $p->rating);
             }
@@ -72,67 +72,71 @@ class RatingService
     }
 
     public function updateRatings(Contest $contest): void
-{
-    // 1) eager‐load participants, sort by standing
-    $results = $contest
-        ->results()
-        ->with('participant')
-        ->orderBy('standing')
-        ->get();
+    {
+        $results = $contest
+            ->results()
+            ->with('participant')
+            ->orderBy('standing')
+            ->get();
 
-    $n = $results->count();
+        $n = $results->count();
 
-    // 2) build an array of “nodes” each with id, rating, and place
-    $nodes = $results->map(function(ContestResult $r) {
-        /** @var ContestsParticipant $p */
-        $p = $r->participant;
+        $nodes = $results->map(function (ContestResult $r) {
+            $p = $r->participant;
 
-        return (object)[
-            'id'       => $p->id,
-            'rating'   => $p->rating,
-            'standing' => $r->standing,
-        ];
-    })->all();
+            return (object)[
+                'id'       => $p->id,
+                'rating'   => $p->rating ?? self::INTERNAL_RATING,
+                'standing' => $r->standing,
+            ];
+        })->all();
 
-    // 3) compute seeds based on $nodes
-    $seeds = $this->computeSeed($nodes);
+        $seeds = $this->computeSeed($nodes);
 
-    // 4) preliminary deltas
-    $deltas = [];
-    foreach ($nodes as $node) {
-        $seed  = $seeds[$node->id];
-        $place = $node->standing;              // now comes from the result!
-        $m     = sqrt($seed * $place);
-        $perf  = $this->findPerformanceRating($node->id, $m, $nodes);
-        $deltas[$node->id] = ($perf - $node->rating ?? self::INITIAL_RATING) / 2;
-    }
+        // preliminary deltas
+        $deltas = [];
+        foreach ($nodes as $node) {
+            $seed  = $seeds[$node->id];
+            $place = $node->standing;
+            $m     = sqrt($seed * $place);
+            $perf  = $this->findPerformanceRating($node->id, $m, $nodes);
 
-    // 5) inflation adjustment
-    $topS    = min(ceil($n * 0.1), 30);
-    $topIds  = collect($nodes)
-                  ->sortByDesc(fn($n) => $n->rating ?? self::INITIAL_RATING)
-                  ->take($topS)
-                  ->pluck('id');
-    $sumD    = $topIds->sum(fn($id) => $deltas[$id]);
-    $deltaAdj = max(min(-$sumD / $topS, 0), -10);
-
-    // 6) persist both the ContestResult.delta and the new participant
-    DB::transaction(function () use ($results, $deltas, $deltaAdj, $contest) {
-        foreach ($results as $res) {
-            $uid   = $res->contests_participant_id;
-            $delta = round($deltas[$uid] + $deltaAdj);
-
-            // save into the result row
-            $res->delta = $delta;
-            $res->save();
-
-            // update the participant’s rating
-            $p = $res->participant;
-            $p->rating = ($p->rating ?? 100) + $delta;
-            $p->save();
+            $current = $node->rating;
+            $deltas[$node->id] = ($perf - $current) / 2;
         }
 
-        $contest->calculated = true;
-        $contest->save();
-    });
-}}
+        // inflation adjustment
+        $topS    = min(ceil($n * 0.1), 30);
+        $topIds  = collect($nodes)
+            ->sortByDesc(fn($n) => $n->rating)
+            ->take($topS)
+            ->pluck('id');
+        $sumD    = $topIds->sum(fn($id) => $deltas[$id]);
+        $deltaAdj = max(min(-$sumD / $topS, 0), -10);
+
+        DB::transaction(function () use ($results, $deltas, $deltaAdj, $contest) {
+            foreach ($results as $res) {
+                $uid   = $res->contests_participant_id;
+                $delta = floor($deltas[$uid] + $deltaAdj);
+                $p = $res->participant;
+
+                // apply bump
+                $bumpCount = count(self::BUMP_SEQUENCE);
+                $bump = ($p->contests_count < $bumpCount) ? self::BUMP_SEQUENCE[$p->contests_count] : 0;
+
+
+                $res->delta = $bump + $delta;
+                $res->save();
+
+
+                $p->rating = ($p->rating ?? self::INTERNAL_RATING) + $delta;
+                $p->contests_count = ($p->contests_count ?? 0) + 1;
+                $p->display_rating = ($p->display_rating ?? 0) + $delta + $bump;
+                $p->save();
+            }
+
+            $contest->calculated = true;
+            $contest->save();
+        });
+    }
+}

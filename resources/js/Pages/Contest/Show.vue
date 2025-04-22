@@ -16,6 +16,8 @@ defineProps({
             <h2 class="text-xl font-semibold leading-tight">
                 Contest {{ contest.date }}
             </h2>
+            <p class="text-info" v-if="!contest.calculated">Calculating rating changes... Refresh in a few moments to
+                see the results</p>
         </template>
 
         <div class="py-12">
