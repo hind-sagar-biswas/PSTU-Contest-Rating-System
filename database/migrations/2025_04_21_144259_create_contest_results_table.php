@@ -17,10 +17,13 @@ return new class extends Migration
             $table->id();
             $table->foreignIdFor(Contest::class)->constrained()->cascadeOnDelete();
             $table->foreignIdFor(ContestsParticipant::class)->constrained()->cascadeOnDelete();
-            $table->integer('rank');
+            $table->integer('standing');
             $table->integer('solved');
             $table->integer('penalty');
+            $table->integer('delta')->nullable()->default(null);
             $table->timestamps();
+
+            $table->unique(['contest_id', 'contests_participant_id']);
         });
     }
 

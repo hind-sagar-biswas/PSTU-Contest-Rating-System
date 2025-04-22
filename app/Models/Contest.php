@@ -9,12 +9,8 @@ class Contest extends Model
 {
     protected $casts = [
         'date' => 'date',
+        'calculated' => 'boolean',
     ];
-
-    public function participants(): HasMany
-    {
-        return $this->hasMany(ContestsParticipant::class);
-    }
 
     public function results(): HasMany
     {

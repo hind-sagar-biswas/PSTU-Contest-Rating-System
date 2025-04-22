@@ -40,7 +40,7 @@ defineProps({
                                 <template v-if="data.data.length">
                                     <tr v-for="(participant, index) in data.data" :key="index">
                                         <th>{{ index + 1 }}</th>
-                                        <td>{{ participant.name }}</td>
+                                        <td class="text-primary">{{ participant.name }}</td>
                                         <td class="text-right">{{ participant.rating }}</td>
                                     </tr>
                                 </template>

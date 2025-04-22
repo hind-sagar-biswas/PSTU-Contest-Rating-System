@@ -1,20 +1,20 @@
 <script setup>
 import Layout from '@/Layouts/AuthenticatedLayout.vue';
-import { Head, Link } from '@inertiajs/vue3';
+import { Head } from '@inertiajs/vue3';
 
 defineProps({
-    contests: Object
+    contest: Object,
 })
 </script>
 
 <template>
 
-    <Head title="Contests List" />
+    <Head title="Dashboard" />
 
     <Layout>
         <template #header>
             <h2 class="text-xl font-semibold leading-tight">
-                Contests List
+                Contest {{ contest.date }}
             </h2>
         </template>
 
@@ -27,22 +27,27 @@ defineProps({
                             <thead>
                                 <tr>
                                     <th>#</th>
-                                    <th>Date</th>
-                                    <th class="text-right">Participants</th>
-                                    <th class="text-right">View</th>
+                                    <th>Name</th>
+                                    <th class="text-center">Solved</th>
+                                    <th class="text-right">Penalty</th>
+                                    <th class="text-right">Delta</th>
                                 </tr>
                             </thead>
 
                             <!-- body -->
                             <tbody>
-                                <template v-if="contests.data.length">
-                                    <tr v-for="(contest, index) in contests.data" :key="index">
-                                        <th>{{ index + 1 }}</th>
-                                        <td class="text-primary">{{ contest.date }}</td>
-                                        <td class="text-right">{{ contest.participants }}</td>
+                                <template v-if="contest.results.length">
+                                    <tr v-for="(result, index) in contest.results" :key="index">
+                                        <th>{{ result.standing }}</th>
+                                        <td class="text-primary">{{ result.participant.name }}</td>
+                                        <th class="text-center">{{ result.solved }}</th>
+                                        <th class="text-right">{{ result.penalty }}</th>
                                         <td class="text-right">
-                                            <Link :href="route('contest.show', contest.id)"
-                                                class="btn btn-primary btn-sm">View</Link>
+                                            <template v-if="result.delta">
+                                                <b v-if="result.delta > 0" class="text-success">+{{ result.delta }}</b>
+                                                <b v-else class="text-error">{{ result.delta }}</b>
+                                            </template>
+                                            <span v-else class="loading loading-spinner"></span>
                                         </td>
                                     </tr>
                                 </template>
@@ -55,6 +60,7 @@ defineProps({
                 </div>
             </div>
         </div>
+
 
     </Layout>
 </template>

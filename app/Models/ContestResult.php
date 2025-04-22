@@ -9,7 +9,7 @@ class ContestResult extends Model
 {
     public function participant(): BelongsTo
     {
-        return $this->belongsTo(ContestsParticipant::class);
+        return $this->belongsTo(ContestsParticipant::class, 'contests_participant_id');
     }
 
     public function contest(): BelongsTo

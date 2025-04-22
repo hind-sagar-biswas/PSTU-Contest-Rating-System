@@ -14,6 +14,7 @@ return new class extends Migration
         Schema::create('contests', function (Blueprint $table) {
             $table->id();
             $table->date('date');
+            $table->boolean('calculated')->default(false);
             $table->timestamps();
         });
     }

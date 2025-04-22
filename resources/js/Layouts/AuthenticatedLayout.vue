@@ -28,11 +28,13 @@ const showingNavigationDropdown = ref(false);
                             <!-- Navigation Links -->
                             <div class="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex">
                                 <template v-if="$page.props.auth.user">
-                                    <NavLink :href="route('dashboard')" :active="route().current('dashboard')"
-                                        v-if="$page.props.auth.user">
+                                    <NavLink :href="route('dashboard')" :active="route().current('dashboard')">
                                         Dashboard
                                     </NavLink>
                                 </template>
+                                <NavLink :href="route('contest.index')" :active="route().current('contest.index')">
+                                    Contests
+                                </NavLink>
                             </div>
                         </div>
 
@@ -75,9 +77,6 @@ const showingNavigationDropdown = ref(false);
                                             <DropdownLink :href="route('login')">
                                                 Log in
                                             </DropdownLink>
-                                            <DropdownLink :href="route('register')">
-                                                Register
-                                            </DropdownLink>
                                         </template>
                                     </template>
                                 </Dropdown>
@@ -117,11 +116,13 @@ const showingNavigationDropdown = ref(false);
                 }" class="sm:hidden">
                     <div class="space-y-1 pb-3 pt-2">
                         <template v-if="$page.props.auth.user">
-                            <ResponsiveNavLink :href="route('dashboard')" :active="route().current('dashboard')"
-                                v-if="$page.props.auth.user">
+                            <ResponsiveNavLink :href="route('dashboard')" :active="route().current('dashboard')">
                                 Dashboard
                             </ResponsiveNavLink>
                         </template>
+                        <ResponsiveNavLink :href="route('contest.index')" :active="route().current('contest.index')">
+                            Contests
+                        </ResponsiveNavLink>
                     </div>
 
                     <!-- Responsive Settings Options -->
@@ -148,10 +149,7 @@ const showingNavigationDropdown = ref(false);
                                 <ResponsiveNavLink :href="route('login')">
                                     Log in
                                 </ResponsiveNavLink>
-                                <ResponsiveNavLink :href="route('register')">
-                                    Register
-                                </ResponsiveNavLink>
-                            </template>``
+                            </template>
                         </div>
                     </div>
                 </div>
