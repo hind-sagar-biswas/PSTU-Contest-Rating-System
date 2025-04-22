@@ -42,3 +42,10 @@ The PSTU Contest Rating System is a rating system for online programming contest
    - Update participant’s `display_rating` += Δ + bump.  
    - Increment `num_contests` by 1.
 
+## Source
+
+[Elo Rating](https://codeforces.com/blog/entry/102)
+
+[Open Codeforces Rating System](https://codeforces.com/blog/entry/20762)
+
+[Rating Calculation for New Accounts](https://codeforces.com/blog/entry/77890)
