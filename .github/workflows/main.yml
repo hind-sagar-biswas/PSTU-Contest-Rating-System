@@ -1,0 +1,64 @@
+on:
+  push:
+    branches: ["production", "UI_CHANGES"]
+
+name: 🚀 Deployment
+jobs:
+  web-deploy:
+    name: 🎉 Deploy
+    runs-on: ubuntu-latest
+    steps:
+      - name: 🚚 Get latest code
+        uses: actions/checkout@v2
+
+      - name: Use Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: "20.19.0"
+
+      - name: Setup PHP with PECL extension
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: "8.3"
+
+
+      - name: ⬆️ Composer Update
+        run: composer update
+        
+      - name: 🗑️ Remove vendor folder
+        run: rm -rf vendor
+
+      - name: ⬆️ Composer Install No Dev
+        run: composer install --no-dev
+        
+      - name: 📋 Copy .env
+        run: php -r "file_exists('.env') || copy('.env.prod', '.env');"
+
+      - name: 🔑 Generate App Key
+        run: php artisan key:generate
+
+      - name: 🗑️ Clear Cashe
+        run: php artisan cache:clear
+
+      - name: 🗑️ Clear Optimizations
+        run: php artisan optimize:clear
+
+      - name: Optimize Routes
+        run: php artisan route:cache
+
+      - name: 🔑 Directory Permissions
+        run: chmod -R 777 storage bootstrap/cache
+
+      - name: ⬇️ Install Npm
+        run: npm install
+
+      - name: 🏗️ Build JS and CSS
+        run: npm run build
+
+      - name: 📂 Sync files
+        uses: SamKirkland/FTP-Deploy-Action@4.3.3
+        with:
+          server: ${{ secrets.FTP_SERVERNAME }}
+          username: ${{ secrets.FTP_USERNAME }}
+          password: ${{ secrets.FTP_PASSWORD }}
+          server-dir: /
