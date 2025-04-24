@@ -42,10 +42,10 @@ defineProps({
                                     <tr v-for="(result, index) in contest.results" :key="index">
                                         <th>{{ result.standing }}</th>
                                         <td class="text-primary">
-                                            <Link :href="`https://codeforces.com/profile/${result.participant.name}`"
-                                                class="text-primary" target="_blank">
-                                            {{ result.participant.name }}
-                                            </Link>
+                                            <a :href="`https://codeforces.com/profile/${result.participant.name}`"
+                                                class="text-primary font-bold" target="_blank">
+                                                {{ result.participant.name }}
+                                            </a>
                                         </td>
                                         <th class="text-center">{{ result.solved }}</th>
                                         <th class="text-right">{{ result.penalty }}</th>
