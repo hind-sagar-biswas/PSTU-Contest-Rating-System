@@ -1,6 +1,6 @@
 <script setup>
 import Layout from '@/Layouts/AuthenticatedLayout.vue';
-import { Head } from '@inertiajs/vue3';
+import { Head, Link } from '@inertiajs/vue3';
 
 defineProps({
     contest: Object,
@@ -41,7 +41,12 @@ defineProps({
                                 <template v-if="contest.results.length">
                                     <tr v-for="(result, index) in contest.results" :key="index">
                                         <th>{{ result.standing }}</th>
-                                        <td class="text-primary">{{ result.participant.name }}</td>
+                                        <td class="text-primary">
+                                            <Link :href="`https://codeforces.com/profile/${result.participant.name}`"
+                                                class="text-primary" target="_blank">
+                                            {{ result.participant.name }}
+                                            </Link>
+                                        </td>
                                         <th class="text-center">{{ result.solved }}</th>
                                         <th class="text-right">{{ result.penalty }}</th>
                                         <td class="text-right">
