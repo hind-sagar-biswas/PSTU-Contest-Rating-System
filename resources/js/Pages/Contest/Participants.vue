@@ -1,7 +1,7 @@
 <script setup>
 import Layout from '@/Layouts/AuthenticatedLayout.vue';
 import Rating from '@/Components/Rating.vue';
-import { Head } from '@inertiajs/vue3';
+import { Head, Link } from '@inertiajs/vue3';
 
 defineProps({
     data: {
@@ -32,7 +32,7 @@ defineProps({
                                 <tr>
                                     <th>#</th>
                                     <th>Name</th>
-                                    <th>Contests</th>
+                                    <th class="text-right">Contests</th>
                                     <th class="text-right">Rating</th>
                                 </tr>
                             </thead>
@@ -44,7 +44,10 @@ defineProps({
                                         <th>{{ index + 1 }}</th>
                                         <td>
                                             <!--Rating :rating="participant.rating" :value="participant.name" /-->
+                                            <Link :href="`https://codeforces.com/profile/${participant.name}`"
+                                                class="text-primary" target="_blank">
                                             {{ participant.name }}
+                                            </Link>
                                         </td>
                                         <td class="text-right">{{ participant.contests_count }}</td>
                                         <td class="text-right">
