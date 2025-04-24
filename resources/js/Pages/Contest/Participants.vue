@@ -44,10 +44,10 @@ defineProps({
                                         <th>{{ index + 1 }}</th>
                                         <td>
                                             <!--Rating :rating="participant.rating" :value="participant.name" /-->
-                                            <Link :href="`https://codeforces.com/profile/${participant.name}`"
-                                                class="text-primary" target="_blank">
-                                            {{ participant.name }}
-                                            </Link>
+                                            <a :href="`https://codeforces.com/profile/${participant.name}`"
+                                                class="text-primary font-bold" target="_blank">
+                                                {{ participant.name }}
+                                            </a>
                                         </td>
                                         <td class="text-right">{{ participant.contests_count }}</td>
                                         <td class="text-right">
