@@ -16,4 +16,15 @@ class ContestsParticipantController extends Controller
             'data' => ParticipantResource::collection($data),
         ]);
     }
+
+    public function show(string $name)
+    {
+        $participant = ContestsParticipant::where('name', $name)->firstOrFail();
+
+
+        return Inertia::render('Participant/Show', [
+            'participant' => new ParticipantResource($participant),
+            'contests' => [],
+        ]);
+    }
 }

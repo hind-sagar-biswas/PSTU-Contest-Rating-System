@@ -1,5 +1,6 @@
 <script setup>
 import Rating from '@/Components/Rating.vue';
+import { Link } from '@inertiajs/vue3';
 import { computed } from 'vue';
 
 const props = defineProps({
@@ -50,15 +51,15 @@ const AltText = computed(() => {
         <div class="text-xs uppercase font-semibold opacity-60 hidden sm:block">
             Contests Participated: {{ participant.contests_count }}
         </div>
-        <button class="btn btn-primary">
-            <span class="hidden sm:inline">View Profile</span>
-            <svg class="size-[1.2em]" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
-                <g stroke-linejoin="round" stroke-linecap="round" stroke-width="2" fill="none" stroke="currentColor">
-                    <path d="M6 3L20 12 6 21 6 3z"></path>
-                </g>
-            </svg>
+        <Link :href="route('participant.show', participant.name)" class="btn btn-primary">
+        <span class="hidden sm:inline">View Profile</span>
+        <svg class="size-[1.2em]" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+            <g stroke-linejoin="round" stroke-linecap="round" stroke-width="2" fill="none" stroke="currentColor">
+                <path d="M6 3L20 12 6 21 6 3z"></path>
+            </g>
+        </svg>
 
-        </button>
+        </Link>
     </div>
 
 </template>

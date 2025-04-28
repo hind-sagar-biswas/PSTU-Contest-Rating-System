@@ -1,5 +1,6 @@
 <script setup>
 import Rating from '@/Components/Rating.vue';
+import { Link } from '@inertiajs/vue3';
 defineProps({
     rank: {
         type: Number,
@@ -26,13 +27,12 @@ const padby = (value, pad = 2) => value.toString().padStart(pad, '0');
                 <Rating :rating="participant.display_rating" />
             </div>
         </div>
-        <a :href="`https://codeforces.com/profile/${participant.name}`" target="_blank"
-            class="btn btn-square btn-primary">
-            <svg class="size-[1.2em]" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
-                <g stroke-linejoin="round" stroke-linecap="round" stroke-width="2" fill="none" stroke="currentColor">
-                    <path d="M6 3L20 12 6 21 6 3z"></path>
-                </g>
-            </svg>
-        </a>
+        <Link :href="route('participant.show', participant.name)" class="btn btn-square btn-primary">
+        <svg class="size-[1.2em]" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+            <g stroke-linejoin="round" stroke-linecap="round" stroke-width="2" fill="none" stroke="currentColor">
+                <path d="M6 3L20 12 6 21 6 3z"></path>
+            </g>
+        </svg>
+        </Link>
     </li>
 </template>
