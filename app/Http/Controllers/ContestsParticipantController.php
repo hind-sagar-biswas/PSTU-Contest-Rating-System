@@ -12,7 +12,7 @@ class ContestsParticipantController extends Controller
     public function __invoke()
     {
         $data = ContestsParticipant::orderBy('display_rating', 'desc')->latest()->get();
-        return Inertia::render('Contest/Participants', [
+        return Inertia::render('Participant/Index', [
             'data' => ParticipantResource::collection($data),
         ]);
     }
