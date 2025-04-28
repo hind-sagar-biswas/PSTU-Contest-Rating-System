@@ -1,13 +1,16 @@
 <script setup>
 import Layout from '@/Layouts/AuthenticatedLayout.vue';
-import Rating from '@/Components/Rating.vue';
-import { Head, Link } from '@inertiajs/vue3';
+import List from './Partials/ParticipantsList.vue';
+import TopThree from './Partials/TopThree.vue';
+import { Head } from '@inertiajs/vue3';
 
 defineProps({
     data: {
         type: Object
     },
 });
+
+
 </script>
 
 
@@ -23,45 +26,16 @@ defineProps({
         </template>
 
         <div class="py-12">
-            <div class="mx-auto max-w-7xl space-y-6 sm:px-6 lg:px-8">
-                <div class="bg-base-200 p-4 shadow-sm sm:rounded-lg sm:p-8">
-                    <div class="overflow-x-auto">
-                        <table class="table table-zebra">
-                            <!-- head -->
-                            <thead>
-                                <tr>
-                                    <th>#</th>
-                                    <th>Name</th>
-                                    <th class="text-right">Contests</th>
-                                    <th class="text-right">Rating</th>
-                                </tr>
-                            </thead>
+            <div class="mx-auto max-w-7xl space-y-6 px-2 sm:px-6 lg:px-8">
 
-                            <!-- body -->
-                            <tbody>
-                                <template v-if="data.data.length">
-                                    <tr v-for="(participant, index) in data.data" :key="index">
-                                        <th>{{ index + 1 }}</th>
-                                        <td>
-                                            <!--Rating :rating="participant.rating" :value="participant.name" /-->
-                                            <a :href="`https://codeforces.com/profile/${participant.name}`"
-                                                class="text-primary font-bold" target="_blank">
-                                                {{ participant.name }}
-                                            </a>
-                                        </td>
-                                        <td class="text-right">{{ participant.contests_count }}</td>
-                                        <td class="text-right">
-                                            <Rating :rating="participant.display_rating" />
-                                        </td>
-                                    </tr>
-                                </template>
-                                <tr v-else>
-                                    <td colspan="3" class="text-center text-gray-500">No data found</td>
-                                </tr>
-                            </tbody>
-                        </table>
-                    </div>
+                <div class="text-center text-gray-500" v-if="!data.data.length">
+                    <p>No data found</p>
                 </div>
+                <template v-else>
+                    <TopThree :data="data.data.slice(0, 3)" />
+                    <List caption="Participants" v-if="data.data.length > 3" :data="data.data.slice(3)" />
+                </template>
+
             </div>
         </div>
     </Layout>
