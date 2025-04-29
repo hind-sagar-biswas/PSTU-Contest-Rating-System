@@ -1,4 +1,5 @@
 <script setup>
+import './../../../css/jse-theme.css';
 import Layout from '@/Layouts/AuthenticatedLayout.vue';
 import InputError from '@/Components/InputError.vue';
 import InputLabel from '@/Components/InputLabel.vue';
@@ -8,12 +9,15 @@ import TextArea from '@/Components/TextArea.vue';
 import Sample from './Partials/Sample.vue';
 import { useForm } from '@inertiajs/vue3';
 import { Head } from '@inertiajs/vue3';
+import JsonEditorVue from 'json-editor-vue'
 
 const form = useForm({
     json: '',
     results: [],
     date: '',
 });
+
+
 
 const submit = () => {
     form.clearErrors();
@@ -94,7 +98,6 @@ const submit = () => {
 }
 </script>
 
-
 <template>
 
     <Head title="Dashboard" />
@@ -122,7 +125,10 @@ const submit = () => {
                             <InputError :message="form.errors.results" class="mt-2" />
                             <InputError :message="form.errors.json" class="mt-2" />
 
-                            <TextArea id="json" v-model="form.json" class="mt-1 block w-full min-h-[400px]" required />
+                            <div class="my-json-editor jse-theme-dark rounded-lg">
+                                <JsonEditorVue v-model="form.json" :main-menu-bar="false" :status-bar="true"
+                                    mode="text" />
+                            </div>
 
                             <InputError :message="form.errors.json" class="mt-2" />
                             <InputError :message="form.errors.results" class="mt-2" />
