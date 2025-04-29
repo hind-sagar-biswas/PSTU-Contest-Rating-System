@@ -14,7 +14,8 @@ onMounted(() => {
 });
 
 const footer = (tooltipItems) => {
-    return 'Delta: ' + props.results[tooltipItems[0].parsed.x].delta;
+    const delta = props.results[tooltipItems[0].parsed.x].delta;
+    return `Delta: ${delta < 0 ? '-' : '+'}${delta}`;
 };
 
 
