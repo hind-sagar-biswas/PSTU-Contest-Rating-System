@@ -1,5 +1,6 @@
 <script setup>
 import Layout from '@/Layouts/AuthenticatedLayout.vue';
+import Item from './Components/ContestItem.vue';
 import { Head, Link } from '@inertiajs/vue3';
 
 defineProps({
@@ -19,42 +20,22 @@ defineProps({
         </template>
 
         <div class="py-12">
-            <div class="mx-auto max-w-7xl space-y-6 sm:px-6 lg:px-8">
-                <div class="bg-base-200 p-4 shadow-sm sm:rounded-lg sm:p-8">
-                    <div class="overflow-x-auto">
-                        <table class="table table-zebra">
-                            <!-- head -->
-                            <thead>
-                                <tr>
-                                    <th>#</th>
-                                    <th>Date</th>
-                                    <th class="text-right">Participants</th>
-                                    <th class="text-right">View</th>
-                                </tr>
-                            </thead>
+            <div class="mx-auto max-w-7xl space-y-6 px-2 sm:px-6 lg:px-8">
 
-                            <!-- body -->
-                            <tbody>
-                                <template v-if="contests.data.length">
-                                    <tr v-for="(contest, index) in contests.data" :key="index">
-                                        <th>{{ index + 1 }}</th>
-                                        <td class="text-primary">{{ contest.date }}</td>
-                                        <td class="text-right">{{ contest.participants }}</td>
-                                        <td class="text-right">
-                                            <Link :href="route('contest.show', contest.id)"
-                                                class="btn btn-primary btn-sm">View</Link>
-                                        </td>
-                                    </tr>
-                                </template>
-                                <tr v-else>
-                                    <td colspan="3" class="text-center text-gray-500">No data found</td>
-                                </tr>
-                            </tbody>
-                        </table>
-                    </div>
+                <div class="text-center text-gray-500" v-if="!contests.data.length">
+                    <p>No data found</p>
                 </div>
+                <template v-else>
+                    <ul class="list bg-base-100 rounded-box shadow-md">
+
+                        <li class="p-4 pb-2 text-xs opacity-60 tracking-wide">Previous Contests</li>
+
+                        <Item v-for="(contest, index) in contests.data" :key="index"
+                            :index="contests.data.length - index" :contest="contest" />
+                    </ul>
+                </template>
+
             </div>
         </div>
-
     </Layout>
 </template>
