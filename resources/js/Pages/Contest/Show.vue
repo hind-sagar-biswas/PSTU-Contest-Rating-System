@@ -42,7 +42,7 @@ defineProps({
                                     <tr v-for="(result, index) in contest.results" :key="index">
                                         <th>{{ result.standing }}</th>
                                         <td class="text-primary">
-                                            <Link :href="route('participant.show', participant.name)"
+                                            <Link :href="route('participant.show', result.participant.name)"
                                                 class="text-primary font-bold">
                                             {{ result.participant.name }}
                                             </Link>
