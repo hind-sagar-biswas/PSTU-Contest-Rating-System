@@ -7,6 +7,7 @@ use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 
 Route::get('/', ContestsParticipantController::class)->name('home');
+Route::get('/profile/{name}', [ContestsParticipantController::class, 'show'])->name('participant.show');
 
 Route::prefix('contest')->name('contest.')->controller(ContestController::class)->group(function () {
     Route::get('/', 'index')->name('index');
