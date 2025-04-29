@@ -31,11 +31,11 @@ const data = computed(() => {
     })
 
     return {
-        labels: props.results.map(x => x.contest_date),
+        labels: props.results.map(x => x.contest_date).reverse(),
         datasets: [
             {
                 label: 'Rating',
-                data: rating_changes,
+                data: rating_changes.reverse(),
                 fill: false,
                 tension: 0,
                 borderColor: documentStyle.getPropertyValue('--color-accent'),
