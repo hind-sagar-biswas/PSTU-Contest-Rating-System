@@ -10,13 +10,26 @@ defineProps({
     },
 });
 
+const title = 'PSTU Weekly Stantings';
+const description = 'PSTU Weekly Contest Stantings | CSE Club | Patuakhali Science and Technology University';
 
 </script>
 
 
 <template>
 
-    <Head title="PSTU Weekly Stantings" />
+    <Head>
+        <title>{{ title }}</title>
+        <meta name="description" :content="description">
+        <meta name="keywords" content="PSTU, CSE, CSE Club, Competitive Programming, Ratings">
+        <meta name="author" content="Hind Sagar Biswas | CSE Club, PSTU">
+        <meta name="twitter:title" :content="title" />
+        <meta property="og:type" content="website" />
+        <meta property="og:site_name" :content="title" />
+        <meta property="og:url" content="https://pstu-cp.hindbiswas.com" />
+        <meta property="og:title" :content="title" />
+        <meta property="og:description" :content="description" />
+    </Head>
 
     <Layout>
         <template #header>
